@@ -1,0 +1,130 @@
+# 🧭 Markdown & Unicode Cheat Sheet cho GitHub README
+
+Dưới đây là tổng hợp các **ký tự đặc biệt** và **cấu trúc Markdown** thường dùng khi viết tài liệu kỹ thuật hoặc trình bày README đẹp trên GitHub.
+
+---
+
+## 🧱 1. Cấu trúc cây thư mục (Directory Tree)
+
+```
+project/
+├── src/
+│   ├── main.py
+│   └── utils/
+│       └── helper.py
+└── README.md
+```
+
+| Ký tự | Tên gọi | Mã Unicode | Cách gõ nhanh |
+|-------|----------|-------------|----------------|
+| `├` | Branch (nhánh giữa) | U+251C | Alt + 195 |
+| `│` | Pipe dọc (đường nối) | U+2502 | Alt + 179 |
+| `└` | Nhánh cuối | U+2514 | Alt + 192 |
+| `─` | Gạch ngang | U+2500 | Alt + 196 |
+
+---
+
+## ✍️ 2. Định dạng văn bản trong Markdown
+
+| Cú pháp | Kết quả | Ghi chú |
+|----------|----------|----------|
+| `**chữ đậm**` | **chữ đậm** | Dùng để nhấn mạnh |
+| `*chữ nghiêng*` | *chữ nghiêng* | Dùng cho thuật ngữ |
+| `~~gạch bỏ~~` | ~~gạch bỏ~~ | Dùng để biểu thị phần không còn dùng |
+| `` `code` `` | `code` | Hiển thị code ngắn trong dòng |
+| ```` ```python ... ``` ```` | Khối code nhiều dòng | Có thể chỉ định ngôn ngữ để tô màu cú pháp |
+
+---
+
+## 📋 3. Danh sách (List)
+
+### Dạng không thứ tự:
+```
+- Mục 1
+- Mục 2
+  - Mục 2.1
+  - Mục 2.2
+```
+### Dạng có thứ tự:
+```
+1. Bước 1
+2. Bước 2
+   1. Chi tiết 2.1
+```
+
+---
+
+## 📑 4. Bảng (Table)
+
+```
+| Cột 1 | Cột 2 |
+|-------|-------|
+| Dữ liệu A | Dữ liệu B |
+```
+| Cột 1 | Cột 2 |
+|-------|-------|
+| Dữ liệu A | Dữ liệu B |
+
+---
+
+## 🔗 5. Liên kết & Ảnh
+
+| Cú pháp | Ví dụ | Kết quả |
+|----------|--------|----------|
+| `[Tên link](URL)` | `[GitHub](https://github.com)` | [GitHub](https://github.com) |
+| `![Alt text](image.png)` | ![Alt text](https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png) | Hiển thị ảnh |
+
+---
+
+## 💬 6. Blockquote (Trích dẫn)
+
+```
+> Đây là đoạn trích dẫn.
+> Có thể dài nhiều dòng.
+```
+> Đây là đoạn trích dẫn.
+> Có thể dài nhiều dòng.
+
+---
+
+## ⚡ 7. Biểu tượng cảm xúc (Emoji)
+
+Sử dụng mã emoji của GitHub:  
+👉 [https://github.com/ikatyang/emoji-cheat-sheet](https://github.com/ikatyang/emoji-cheat-sheet)
+
+Ví dụ:  
+```
+:rocket: :sparkles: :tada:
+```
+🚀 ✨ 🎉
+
+---
+
+## 📦 8. Dòng phân tách
+
+```
+---
+***
+___
+```
+---
+
+## 🧠 Ghi nhớ nhanh
+
+| Mục đích | Cú pháp nhanh | Ghi chú |
+|-----------|----------------|----------|
+| In đậm | `**text**` | |
+| Nghiêng | `*text*` | |
+| Gạch bỏ | `~~text~~` | |
+| Code ngắn | `` `text` `` | |
+| Block code | ```` ```language``` ```` | |
+| Danh sách | `-` hoặc `*` | |
+| Bảng | `|` và `-` | |
+| Trích dẫn | `>` | |
+| Link | `[text](url)` | |
+| Ảnh | `![alt](url)` | |
+
+---
+
+**Tác giả:** ChatGPT x Portlogics  
+**Phiên bản:** 1.0 (2025-10-24)
