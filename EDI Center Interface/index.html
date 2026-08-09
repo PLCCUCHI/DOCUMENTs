@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EDI Center — CMIT Customer Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0A1F3D;
+    --navy-hover: #16305A;
+    --navy-active: #132A4D;
+    --green: #7FE52E;
+    --text-light: #F5F4F0;
+    --text-side-muted: #8A94A6;
+    --bg-page: #E8E6E0;
+    --bg-main: #F5F4F0;
+    --bg-card: #FFFFFF;
+    --border-card: #E0DDD5;
+    --border-input: #C9C6BE;
+    --text-navy: #0A1F3D;
+    --text-muted: #6B7280;
+    --text-muted2: #8A8578;
+    --text-body: #2A3242;
+    --link-blue: #2F6FD0;
+    --danger: #D6453D;
+    --neutral-badge: #8A94A6;
+    --chip-bg: #ECEAE3;
+    --chip-border: #DCD8CF;
+    --error-border: #E7C4C1;
+    --error-bg: #FCF6F5;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body {
+    font-family: Inter, system-ui, sans-serif;
+    background: var(--bg-page);
+    color: var(--text-navy);
+  }
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-thumb { background: var(--navy-hover); border-radius: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+
+  .app-shell {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    background: var(--bg-main);
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* ---------- Sidebar (expanded) ---------- */
+  .sidebar {
+    width: 260px;
+    flex: none;
+    background: var(--navy);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+  .sidebar-header {
+    padding: 14px 12px 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid var(--navy-hover);
+    flex: none;
+  }
+  .sidebar-title { flex: 1; color: var(--text-light); font-size: 14px; font-weight: 600; }
+  .lang-toggle { display: flex; align-items: center; background: var(--navy-active); border-radius: 4px; padding: 2px; }
+  .lang-btn {
+    font-size: 11px; font-weight: 600; padding: 3px 7px; border-radius: 3px;
+    color: var(--text-side-muted); cursor: pointer; border: none; background: transparent;
+    font-family: inherit;
+  }
+  .lang-btn.active { background: #2A4570; color: var(--text-light); }
+  .lang-btn:not(.active):hover { color: var(--text-light); }
+
+  .collapse-btn {
+    width: 24px; height: 24px; display: flex; align-items: center; justify-content: center;
+    color: var(--text-side-muted); cursor: pointer; border-radius: 4px; background: none; border: none;
+  }
+  .collapse-btn:hover { background: var(--navy-hover); color: var(--text-light); }
+
+  .nav-scroll { flex: 1; overflow-y: auto; padding: 4px 0 8px; }
+
+  .group-header {
+    display: flex; align-items: center; gap: 10px; padding: 10px 16px;
+    font-size: 14px; cursor: pointer; white-space: nowrap; outline: none;
+    border: none; background: none; width: 100%; text-align: left; font-family: inherit;
+  }
+  .group-header.is-open { color: var(--text-light); font-weight: 600; }
+  .group-header.is-closed { color: var(--text-side-muted); }
+  .group-header:hover { background: var(--navy-hover); }
+  .group-header:focus-visible { outline: 2px solid var(--green); outline-offset: -2px; }
+  .group-header .g-label { flex: 1; overflow: hidden; text-overflow: ellipsis; }
+  .group-caret { color: var(--text-side-muted); font-size: 9px; flex: none; }
+
+  .rollup-badge {
+    font-size: 11px; font-weight: 600; padding: 1px 6px; border-radius: 9px; flex: none;
+  }
+  .rollup-badge.danger { background: var(--danger); color: var(--text-light); }
+  .rollup-badge.neutral { background: var(--neutral-badge); color: var(--navy); }
+
+  .item-row {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 6px 10px 24px; color: var(--text-light); font-size: 14px;
+    cursor: pointer; white-space: nowrap; outline: none; border: none; background: none;
+    width: 100%; text-align: left; font-family: inherit;
+  }
+  .item-row:hover { background: var(--navy-hover); }
+  .item-row:focus-visible { outline: 2px solid var(--green); outline-offset: -2px; }
+  .item-row.active {
+    padding-left: 21px; background: var(--navy-active); border-left: 3px solid var(--green); color: var(--green);
+  }
+  .item-row .i-label { flex: 1; overflow: hidden; text-overflow: ellipsis; }
+  .item-badge { font-size: 11px; font-weight: 600; padding: 1px 6px; border-radius: 9px; flex: none; }
+  .item-badge.danger { background: var(--danger); color: var(--text-light); }
+  .item-badge.neutral { background: var(--neutral-badge); color: var(--navy); }
+
+  .group-gap { height: 16px; }
+
+  /* ---------- Sidebar (collapsed rail) ---------- */
+  .rail {
+    width: 64px; flex: none; background: var(--navy); display: flex; flex-direction: column;
+    height: 100%; position: relative; z-index: 2;
+  }
+  .rail-header {
+    height: 53px; flex: none; display: flex; align-items: center; justify-content: center;
+    border-bottom: 1px solid var(--navy-hover); color: var(--text-light); font-size: 13px; font-weight: 700;
+    cursor: pointer; border: none; background: none; width: 100%; font-family: inherit;
+  }
+  .rail-header:hover { background: var(--navy-hover); }
+  .rail-scroll { flex: 1; overflow-y: auto; padding: 4px 0; }
+  .rail-item {
+    height: 48px; display: flex; align-items: center; justify-content: center; cursor: pointer;
+    border: none; background: none; width: 100%; position: relative;
+  }
+  .rail-item:hover { background: var(--navy-hover); }
+  .rail-item.active { background: var(--navy-active); border-left: 3px solid var(--green); }
+
+  .flyout {
+    position: absolute; left: 64px; top: 53px; width: 260px; background: var(--navy);
+    border-left: 1px solid var(--navy-hover); box-shadow: 8px 0 22px rgba(10,31,61,0.28); z-index: 3;
+  }
+  .flyout-title {
+    padding: 14px 16px 12px; color: var(--text-light); font-size: 14px; font-weight: 600;
+    border-bottom: 1px solid var(--navy-hover); white-space: nowrap;
+  }
+  .flyout-list { padding: 6px 0 8px; }
+  .flyout-item {
+    display: flex; align-items: center; gap: 8px; padding: 10px 14px 10px 16px; color: var(--text-light);
+    font-size: 14px; cursor: pointer; white-space: nowrap; border: none; background: none; width: 100%;
+    text-align: left; font-family: inherit;
+  }
+  .flyout-item:hover { background: var(--navy-hover); }
+  .flyout-item.active { padding-left: 13px; background: var(--navy-active); border-left: 3px solid var(--green); color: var(--green); }
+  .flyout-item .i-label { flex: 1; overflow: hidden; text-overflow: ellipsis; }
+
+  /* ---------- Main pane ---------- */
+  .main-pane { flex: 1; background: var(--bg-main); display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+
+  .breadcrumb {
+    padding: 16px 24px 0; display: flex; align-items: center; gap: 8px; font-size: 13px;
+    color: var(--text-muted); white-space: nowrap; flex: none;
+  }
+  .breadcrumb .sep { color: #B6B2A8; }
+  .breadcrumb .current { color: var(--text-navy); font-weight: 500; }
+
+  .page-title-row { padding: 10px 24px 0; display: flex; align-items: center; gap: 10px; flex: none; }
+  .page-title { font-size: 20px; font-weight: 600; color: var(--text-navy); }
+
+  .filter-card {
+    margin: 12px 24px 0; background: var(--bg-card); border: 1px solid var(--border-card);
+    border-radius: 4px; padding: 12px 14px; display: flex; flex-direction: column; gap: 10px; flex: none;
+  }
+  .filter-row { display: flex; align-items: flex-end; gap: 10px; }
+  .filter-grid { flex: 1; display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr; gap: 10px; }
+  .filter-grid.secondary { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 10px; }
+  .filter-field { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+  .filter-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted2); }
+  .filter-input {
+    height: 30px; border: 1px solid var(--border-input); border-radius: 3px; background: #FDFCFA;
+    display: flex; align-items: center; padding: 0 8px; font-size: 12.5px; color: var(--text-navy);
+    white-space: nowrap; overflow: hidden; gap: 6px;
+  }
+  .filter-input .fv { flex: 1; overflow: hidden; text-overflow: ellipsis; }
+  .filter-input .caret { color: var(--text-muted2); font-size: 9px; }
+  .filter-actions { display: flex; align-items: center; gap: 8px; flex: none; }
+  .btn {
+    height: 30px; padding: 0 14px; display: flex; align-items: center; font-size: 12.5px;
+    border-radius: 3px; cursor: pointer; border: 1px solid transparent; font-family: inherit;
+  }
+  .btn-primary { background: var(--navy); color: var(--text-light); font-weight: 500; }
+  .btn-primary:hover { background: var(--navy-hover); }
+  .btn-outline { border-color: var(--border-input); color: var(--text-navy); background: none; padding: 0 12px; }
+  .btn-outline:hover { background: #ECEAE3; }
+  .more-filters { display: flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--link-blue); font-weight: 500; cursor: pointer; border: none; background: none; padding: 0; font-family: inherit; width: fit-content; }
+  .more-filters .car { font-size: 9px; }
+
+  .chips-row { margin: 10px 24px 0; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; min-height: 24px; flex: none; }
+  .chip {
+    display: flex; align-items: center; gap: 6px; background: var(--chip-bg); border: 1px solid var(--chip-border);
+    border-radius: 12px; padding: 3px 8px 3px 10px; font-size: 12px; color: var(--text-body); white-space: nowrap;
+  }
+  .chip .x { color: var(--text-muted2); cursor: pointer; }
+  .count-label { margin-left: auto; font-size: 12.5px; color: var(--text-muted); }
+
+  .bulk-row { margin: 10px 24px 0; display: flex; align-items: center; gap: 8px; flex: none; }
+  .bulk-hint { font-size: 12px; color: var(--text-muted2); }
+  .bulk-actions { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+  .btn-sm { height: 28px; padding: 0 12px; }
+
+  .table-card {
+    margin: 10px 24px 0; flex: 1; min-height: 0; border: 1px solid var(--border-card); border-radius: 4px;
+    background: var(--bg-card); overflow: auto;
+  }
+  .table-grid-cols { display: grid; grid-template-columns: 104px 92px 132px 128px 100px 180px 100px 108px 1fr; }
+  .table-head {
+    position: sticky; top: 0; background: #F0EEE8; border-bottom: 1px solid var(--chip-border);
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); z-index: 1;
+  }
+  .table-head > div { padding: 8px; }
+  .table-head > div:first-child { padding-left: 12px; }
+  .table-head > div:last-child { padding-right: 12px; }
+  .table-row { border-bottom: 1px solid #EFEDE7; font-size: 12.5px; color: var(--text-body); align-items: center; }
+  .table-row > div { padding: 7px 8px; }
+  .table-row > div:first-child { padding-left: 12px; }
+  .table-row > div:last-child { padding-right: 12px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--link-blue); font-size: 12px; }
+  .mono { font-family: 'IBM Plex Mono', monospace; }
+  .stack { display: flex; flex-direction: column; gap: 1px; }
+  .status-pill {
+    display: inline-flex; align-items: center; font-size: 11px; font-weight: 600; letter-spacing: 0.03em;
+    padding: 2px 7px; border-radius: 10px; color: #FFFFFF;
+  }
+
+  .pagination { margin: 0 24px; padding: 10px 0 14px; display: flex; align-items: center; gap: 10px; font-size: 12.5px; color: var(--text-muted); flex: none; }
+  .page-size { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+  .page-size-box { height: 28px; padding: 0 10px; display: flex; align-items: center; gap: 6px; border: 1px solid var(--border-input); border-radius: 3px; color: var(--text-navy); }
+
+  .state-card {
+    margin: 10px 24px 24px; flex: 1; min-height: 0; border-radius: 4px; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 10px; padding: 32px;
+  }
+  .state-card.empty { border: 1px solid var(--border-card); background: var(--bg-card); }
+  .state-card.error { border: 1px solid var(--error-border); background: var(--error-bg); }
+  .state-title { font-size: 16px; font-weight: 600; color: var(--text-navy); text-align: center; }
+  .state-body { font-size: 13px; color: var(--text-muted); text-align: center; max-width: 460px; }
+  .state-err-code { font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; color: var(--danger); }
+
+  .demo-bar {
+    max-width: 1400px; margin: 0 auto 14px; padding: 10px 16px; display: flex; align-items: center; gap: 10px;
+    font-size: 12.5px; color: var(--text-navy);
+  }
+  .demo-bar select { font-family: inherit; font-size: 12.5px; padding: 4px 8px; border-radius: 3px; border: 1px solid var(--border-input); }
+  .page-wrap { display: flex; flex-direction: column; height: 100vh; }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+  <div class="demo-bar">
+    <strong>Trạng thái màn hình (demo):</strong>
+    <select id="stateSelect">
+      <option value="data">Có dữ liệu</option>
+      <option value="emptyFilter">Rỗng vì bộ lọc</option>
+      <option value="emptyData">Rỗng vì chưa có dữ liệu</option>
+      <option value="error">Lỗi tải dữ liệu</option>
+    </select>
+  </div>
+  <div class="app-shell" id="app"></div>
+</div>
+
+<script>
+const ICONS = {
+  gauge: "M2.5 12a5.5 5.5 0 1 1 11 0 M8 12l3-3",
+  inbox: "M2 9.5V13h12V9.5h-3.5l-1 1.5h-3l-1-1.5H2z M3.5 9.5 5 3h6l1.5 6.5",
+  plug: "M6 2v3.5 M10 2v3.5 M4 5.5h8v2a4 4 0 0 1-8 0z M8 11.5V14",
+  shuffle: "M2 4h3l6 8h3 M2 12h3l2-2.7 M11.5 2.5 14 4l-2.5 1.5 M11.5 10.5 14 12l-2.5 1.5",
+  upload: "M8 12V3 M4.5 6.5 8 3l3.5 3.5 M2.5 13.5h11",
+  scale: "M8 2.5v11 M3 13.5h10 M2 6.5h12 M2 6.5 4 10h4 M14 6.5 12 10H8",
+  bell: "M4 11.5h8l-1-1.5V7a3 3 0 0 0-6 0v3l-1 1.5z M6.5 12.5a1.5 1.5 0 0 0 3 0",
+  book: "M3 3h4.5v10H3z M8.5 3H13v10H8.5z",
+  fileclock: "M3 2h6l3 3v3 M9 2v3h3 M10.5 13.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z M10.5 10v1.2l.9.6 M3 2v11h4",
+  ship: "M2.5 10.5 4 7h8l1.5 3.5 M4 7V4.5h8V7 M2 12.5c1.5 1 3 1 4.5 0s3-1 4.5 0 3 .5 3 .5"
+};
+
+// [vi, en, iconKey, permission, gapAfter, items]
+// item: [vi, en, route, permission, status, mô tả, badge?, badgeKind?]
+const RAW = [
+  ["Bảng điều khiển", "Dashboard", "gauge", "DSH", false, [
+    ["Tổng quan", "Overview", "/edi/dashboard/overview", "EDI_DASHBOARD_VIEW", "SRS", "Màn mở đầu ca trực: số bản tin theo trạng thái, xu hướng trong ngày."],
+    ["Tình trạng kênh", "Channel Status", "/edi/dashboard/channel-status", "EDI_CHANNEL_STATUS_VIEW", "NEW", "Tình trạng từng kênh SFTP, mailbox và kênh TOS tại thời điểm hiện tại."]
+  ]],
+  ["Vận hành bản tin", "Message Operations", "inbox", "MSG", false, [
+    ["Bản tin đến", "Inbound Mailbox", "/edi/messages/inbound", "EDI_MAILBOX_VIEW", "SRS", "Danh sách file EDI nhận được từ hãng tàu, kèm thời điểm và nguồn nhận."],
+    ["Theo dõi bản tin", "Message Tracking", "/edi/messages/tracking", "EDI_MESSAGE_VIEW", "SRS", "Tra vết một bản tin qua các bước tiếp nhận, ánh xạ, đẩy sang TOS."],
+    ["Bản tin thất bại", "Failed Messages", "/edi/messages/failed", "EDI_MESSAGE_FAILED_MANAGE", "SRS", "Bản tin lỗi chưa xử lý, kèm mã lỗi và thao tác xử lý lại.", "12", "danger"],
+    ["Bản tin giữ chờ", "Held Messages", "/edi/messages/held", "EDI_MESSAGE_HELD_VIEW", "NEW", "Bản tin dừng chờ điều kiện nghiệp vụ. Trạng thái bình thường, không gắn badge."],
+    ["Vùng cách ly", "Quarantine", "/edi/messages/quarantine", "EDI_QUARANTINE_MANAGE", "NEW", "File không đọc được hoặc sai định dạng, giữ lại để kiểm tra thủ công."],
+    ["Phiên EDI", "EDI Sessions", "/edi/messages/sessions", "EDI_SESSION_VIEW", "SRS", "Lịch sử các phiên trao đổi EDI và kết quả từng phiên."]
+  ]],
+  ["Đối soát", "Reconciliation", "scale", "REC", true, [
+    ["Kết quả đối soát", "Reconciliation Results", "/edi/reconciliation/results", "EDI_RECON_RESULT_VIEW", "SRS", "Chênh lệch giữa dữ liệu EDI và dữ liệu TOS theo từng kỳ đối soát."],
+    ["Quy tắc đối soát", "Reconciliation Rules", "/edi/reconciliation/rules", "EDI_RECON_RULE_MANAGE", "NEW", "Định nghĩa trường so khớp và ngưỡng chấp nhận chênh lệch."],
+    ["Lịch đối soát", "Reconciliation Schedule", "/edi/reconciliation/schedule", "EDI_RECON_SCHEDULE_MANAGE", "NEW", "Thời điểm và tần suất chạy đối soát tự động."]
+  ]],
+  ["Cấu hình kết nối", "Connection Settings", "plug", "CON", false, [
+    ["Máy chủ SFTP nhận", "Inbound SFTP Server", "/edi/connection/sftp-inbound", "EDI_CONN_SFTP_IN_MANAGE", "NEW", "Thông số máy chủ SFTP nhận file EDI từ hãng tàu."],
+    ["Máy chủ SFTP gửi TOS", "Outbound SFTP Server", "/edi/connection/sftp-outbound", "EDI_CONN_SFTP_OUT_MANAGE", "NEW", "Thông số máy chủ SFTP dùng để gửi file sang TOS."],
+    ["Mailbox theo hãng tàu", "Partner Mailboxes", "/edi/connection/mailboxes", "EDI_CONN_MAILBOX_MANAGE", "NEW", "Hộp thư và thư mục trao đổi riêng cho từng hãng tàu."],
+    ["Service Account và khóa", "Service Accounts & Keys", "/edi/connection/service-accounts", "EDI_CONN_ACCOUNT_MANAGE", "NEW", "Tài khoản dịch vụ, khóa SSH và hạn dùng của khóa."],
+    ["Máy chủ thư (SMTP)", "Mail Server (SMTP)", "/edi/connection/smtp", "EDI_CONN_SMTP_MANAGE", "NEW", "Máy chủ gửi thư dùng cho cảnh báo và báo cáo định kỳ."],
+    ["Kênh kết nối TOS", "TOS Channel", "/edi/connection/tos-channel", "EDI_CONN_TOS_MANAGE", "NEW", "Cấu hình kênh trao đổi với Navis N4 và tham số kết nối."]
+  ]],
+  ["Cấu hình ánh xạ", "Mapping Settings", "shuffle", "MAP", false, [
+    ["Bảng ánh xạ theo hãng tàu", "Partner Mapping Tables", "/edi/mapping/partner-maps", "EDI_MAP_PARTNER_MANAGE", "SRS", "Quy tắc chuyển trường dữ liệu của từng hãng tàu sang trường TOS."],
+    ["Hàm quy đổi", "Conversion Functions", "/edi/mapping/functions", "EDI_MAP_FUNCTION_MANAGE", "NEW", "Hàm dùng lại khi ánh xạ: cắt chuỗi, đổi định dạng ngày, quy đổi đơn vị."],
+    ["Trường chưa ánh xạ", "Unmapped Fields", "/edi/mapping/unmapped-fields", "EDI_MAP_UNMAPPED_MANAGE", "NEW", "Trường xuất hiện trong bản tin nhưng chưa có quy tắc ánh xạ.", "8", "neutral"],
+    ["Ánh xạ giá trị dùng chung", "Shared Value Mapping", "/edi/mapping/value-maps", "EDI_MAP_VALUE_VIEW", "SRS", "Bảng giá trị dùng chung cho nhiều hãng tàu: cảng, loại container, mã tàu."],
+    ["Bản tin mẫu và kiểm thử ánh xạ", "Sample Messages & Mapping Test", "/edi/mapping/sample-tests", "EDI_MAP_SAMPLE_TEST", "NEW", "Chạy thử bản tin mẫu qua bộ ánh xạ và xem kết quả trước khi áp dụng."]
+  ]],
+  ["Cấu hình phát hành", "Outbound Settings", "upload", "OUT", false, [
+    ["Định dạng bản tin xuất", "Outbound Message Formats", "/edi/outbound/formats", "EDI_OUT_FORMAT_MANAGE", "NEW", "Chuẩn và phiên bản định dạng cho từng loại bản tin gửi đi."],
+    ["Quy ước đặt tên file", "File Naming Convention", "/edi/outbound/file-naming", "EDI_OUT_NAMING_MANAGE", "NEW", "Mẫu tên file gửi đi theo hãng tàu và loại bản tin."],
+    ["Lịch chạy phiên", "Session Schedule", "/edi/outbound/schedule", "EDI_OUT_SCHEDULE_MANAGE", "NEW", "Thời điểm và tần suất chạy phiên gửi bản tin."],
+    ["Gom nhóm và giới hạn file", "Batching & File Limits", "/edi/outbound/batching", "EDI_OUT_BATCH_MANAGE", "NEW", "Số bản ghi mỗi file và dung lượng tối đa cho một lần gửi."],
+    ["Chính sách thử lại", "Retry Policy", "/edi/outbound/retry-policy", "EDI_OUT_RETRY_MANAGE", "NEW", "Số lần thử lại, khoảng cách giữa các lần và điều kiện dừng."]
+  ]],
+  ["Cảnh báo", "Alerting", "bell", "ALT", true, [
+    ["Quy tắc cảnh báo", "Alert Rules", "/edi/alerts/rules", "EDI_ALERT_RULE_MANAGE", "SRS", "Điều kiện phát cảnh báo: ngưỡng lỗi, kênh mất kết nối, phiên trễ."],
+    ["Mẫu thư cảnh báo", "Email Templates", "/edi/alerts/templates", "EDI_ALERT_TEMPLATE_MANAGE", "NEW", "Nội dung thư gửi đi cho từng loại cảnh báo."],
+    ["Nhóm người nhận", "Recipient Groups", "/edi/alerts/recipients", "EDI_ALERT_RECIPIENT_MANAGE", "NEW", "Danh sách người nhận theo ca trực và theo loại sự cố."],
+    ["Lịch sử cảnh báo", "Alert History", "/edi/alerts/history", "EDI_ALERT_HISTORY_VIEW", "NEW", "Cảnh báo đã phát, thời điểm phát và người tiếp nhận."]
+  ]],
+  ["Danh mục EDI", "EDI Reference Data", "book", "REF", false, [
+    ["Catalog mã lỗi", "Error Code Catalogue", "/edi/reference/error-codes", "EDI_REF_ERRCODE_MANAGE", "SRS", "Danh mục mã lỗi kèm diễn giải và hướng xử lý."],
+    ["Message type và class", "Message Types & Classes", "/edi/reference/message-types", "EDI_REF_MSGTYPE_MANAGE", "NEW", "Danh mục loại bản tin và nhóm bản tin dùng trong hệ thống."],
+    ["Phiên bản EDIFACT", "EDIFACT Directory Versions", "/edi/reference/edifact-versions", "EDI_REF_EDIFACT_MANAGE", "NEW", "Phiên bản bộ từ điển EDIFACT áp dụng cho từng hãng tàu."],
+    ["Tham số hệ thống", "System Parameters", "/edi/reference/system-parameters", "EDI_REF_PARAM_MANAGE", "NEW", "Tham số vận hành chung của module EDI Center."]
+  ]],
+  ["Nhật ký và kiểm toán", "Logs & Audit", "fileclock", "LOG", true, [
+    ["Nhật ký phát hành", "Dispatch Log", "/edi/logs/dispatch", "EDI_LOG_DISPATCH_VIEW", "SRS", "Nhật ký từng lần gửi file đi kèm kết quả."],
+    ["Nhật ký an ninh", "Security Log", "/edi/logs/security", "EDI_LOG_SECURITY_VIEW", "SRS", "Lần đăng nhập, đổi khóa và truy cập bất thường."],
+    ["Nhật ký thao tác", "Audit Trail", "/edi/logs/audit", "EDI_LOG_AUDIT_VIEW", "SRS", "Ai đổi cấu hình nào, đổi lúc nào, giá trị trước và sau."],
+    ["Lịch sử phiên bản bản ghi", "Record Version History", "/edi/logs/record-versions", "EDI_LOG_VERSION_VIEW", "SRS", "Các phiên bản của một bản ghi cấu hình theo thời gian."]
+  ]],
+  ["Kết nối hãng tàu", "Partner Onboarding", "ship", "PTN", false, [
+    ["Hồ sơ hãng tàu", "Partner Profiles", "/edi/partners/profiles", "EDI_PARTNER_PROFILE_MANAGE", "SRS", "Thông tin hãng tàu, đầu mối kỹ thuật và cấu hình đang áp dụng."],
+    ["Ma trận phủ kết nối", "Coverage Matrix", "/edi/partners/coverage-matrix", "EDI_PARTNER_MATRIX_MANAGE", "SRS", "Hãng tàu nào đã chạy loại bản tin nào, còn thiếu loại nào."],
+    ["Nghiệm thu kết nối", "Onboarding Acceptance", "/edi/partners/acceptance", "EDI_PARTNER_ACCEPT_MANAGE", "SRS", "Checklist và kết quả nghiệm thu trước khi cho chạy chính thức."]
+  ]]
+];
+
+const SC = { PENDING: "#2F6FD0", READY: "#2F6FD0", SENT: "#2F6FD0", VERIFIED: "#1E8E4E", HOLD: "#C77A0A", EXPIRED: "#C77A0A", MISMATCH: "#D6453D", FAILED: "#D6453D", REJECTED: "#D6453D" };
+
+// [giờ, quan hệ, mã partner, tên partner, type, tác động, đối tượng, trạng thái, mã lỗi, lý do, phát hành, đối soát, file]
+const ROWS = [
+  ["09/08/2026 08:12", "cách đây 12 phút", "MSCU", "MSC", "COREOR", "Tạo mới", "BK-2608-11234", "SENT", "", "", "08:13", "Chưa kết luận", "MSCU_COREOR_20260809_0812.edi"],
+  ["09/08/2026 08:05", "cách đây 19 phút", "MAEU", "Maersk", "COPARN", "Cập nhật", "BK-2608-11198", "VERIFIED", "", "", "08:06", "Khớp", "MAEU_COPARN_20260809_0805.edi"],
+  ["09/08/2026 07:58", "cách đây 26 phút", "CMDU", "CMA-CGM", "COREOR", "Tạo mới", "BK-2608-11190", "FAILED", "ERR-EDI-201 · L2", "Trường chưa ánh xạ: SHIPMENT_REF", "—", "—", "CMDU_COREOR_20260809_0758.edi"],
+  ["09/08/2026 07:41", "cách đây 43 phút", "ZIMU", "ZIM", "COPARN", "Hủy", "BK-2608-11175", "REJECTED", "ERR-EDI-104 · L1", "Trading partner khai không khớp mailbox", "—", "—", "ZIMU_COPARN_20260809_0741.edi"],
+  ["09/08/2026 07:33", "cách đây 51 phút", "HLCU", "Hapag-Lloyd", "COREOR", "Cập nhật", "DO-2608-00841", "HOLD", "ERR-EDI-301", "Chưa có vessel visit trên TOS", "—", "—", "HLCU_COREOR_20260809_0733.edi"],
+  ["09/08/2026 07:20", "cách đây 1 giờ", "MSCU", "MSC", "COPARN", "Tạo mới", "BK-2608-11150", "READY", "", "", "—", "—", "MSCU_COPARN_20260809_0720.edi"],
+  ["09/08/2026 07:02", "cách đây 1 giờ", "CMDU", "CMA-CGM", "COREOR", "Cập nhật", "DO-2608-00838", "MISMATCH", "", "", "07:03", "Lệch 2 trường", "CMDU_COREOR_20260809_0702.edi"],
+  ["09/08/2026 06:47", "cách đây 2 giờ", "MAEU", "Maersk", "COREOR", "Tạo mới", "BK-2608-11122", "PENDING", "", "", "—", "—", "MAEU_COREOR_20260809_0647.edi"],
+  ["09/08/2026 06:30", "cách đây 2 giờ", "ZIMU", "ZIM", "COPARN", "Cập nhật", "BK-2608-11109", "SENT", "", "", "06:31", "Chưa kết luận", "ZIMU_COPARN_20260809_0630.edi"],
+  ["09/08/2026 06:12", "cách đây 2 giờ", "HLCU", "Hapag-Lloyd", "COREOR", "Hủy", "DO-2608-00829", "EXPIRED", "ERR-EDI-302", "Container chưa về bãi sau 72 giờ", "—", "—", "HLCU_COREOR_20260809_0612.edi"],
+  ["09/08/2026 05:55", "cách đây 3 giờ", "MSCU", "MSC", "COPARN", "Cập nhật", "BK-2608-11090", "VERIFIED", "", "", "05:56", "Khớp", "MSCU_COPARN_20260809_0555.edi"],
+  ["09/08/2026 05:38", "cách đây 3 giờ", "CMDU", "CMA-CGM", "COREOR", "Tạo mới", "BK-2608-11077", "FAILED", "ERR-EDI-102 · L2", "Kết nối TOS gián đoạn khi ghi bản ghi", "—", "—", "CMDU_COREOR_20260809_0538.edi"]
+];
+
+function pad(n) { return n < 10 ? "0" + n : "" + n; }
+function svgIcon(pathKey, size, color) {
+  return `<svg width="${size}" height="${size}" viewBox="0 0 16 16" fill="none" stroke="${color}" stroke-width="1.5">` +
+    ICONS[pathKey].split(" M").map((p,i)=> `<path d="${i===0?p:"M"+p}"></path>`).join("") + `</svg>`;
+}
+
+const state = {
+  lang: "vi",
+  open: "Vận hành bản tin",
+  sel: "/edi/messages/tracking",
+  collapsed: false,
+  flyout: null,
+  demoState: "data"
+};
+
+function findByRoute(route) {
+  for (const g of RAW) for (const it of g[5]) if (it[2] === route) return { g, it };
+  return null;
+}
+
+function render() {
+  const vi = state.lang === "vi";
+  const app = document.getElementById("app");
+  const found = findByRoute(state.sel);
+  const selLabel = vi ? found.it[0] : found.it[1];
+  const groupLabel = vi ? found.g[0] : found.g[1];
+
+  let html = "";
+
+  if (!state.collapsed) {
+    html += `<div class="sidebar">
+      <div class="sidebar-header">
+        <span class="sidebar-title">EDI Center</span>
+        <div class="lang-toggle">
+          <button class="lang-btn ${vi ? "active" : ""}" data-act="setVI">VI</button>
+          <button class="lang-btn ${!vi ? "active" : ""}" data-act="setEN">EN</button>
+        </div>
+        <button class="collapse-btn" data-act="toggleCollapse" title="Thu gọn">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9.5 4 5.5 8l4 4 M12.5 3v10"></path></svg>
+        </button>
+      </div>
+      <div class="nav-scroll">`;
+
+    RAW.forEach((g) => {
+      const items = g[5];
+      const hasActive = items.some(it => it[2] === state.sel);
+      const isOpen = state.open === g[0];
+      const iconColor = hasActive ? "var(--green)" : "var(--text-side-muted)";
+      const danger = items.reduce((s,it)=> s + (it[7]==="danger" ? Number(it[6]) : 0), 0);
+      const neutral = items.reduce((s,it)=> s + (it[7]==="neutral" ? Number(it[6]) : 0), 0);
+
+      if (isOpen) {
+        html += `<div>
+          <button class="group-header is-open" data-act="toggleGroup" data-group="${g[0]}">
+            ${svgIcon(g[2], 16, "var(--green)")}
+            <span class="g-label">${vi ? g[0] : g[1]}</span>
+            <span class="group-caret">▼</span>
+          </button>`;
+        items.forEach(it => {
+          const active = it[2] === state.sel;
+          const badge = it[6] ? `<span class="item-badge ${it[7]}">${it[6]}</span>` : "";
+          html += `<button class="item-row ${active ? "active" : ""}" data-act="select" data-route="${it[2]}">
+            <span class="i-label">${vi ? it[0] : it[1]}</span>${badge}
+          </button>`;
+        });
+        html += `</div>`;
+      } else {
+        const rollupBadge = danger > 0
+          ? `<span class="rollup-badge danger">${danger}</span>`
+          : (neutral > 0 ? `<span class="rollup-badge neutral">${neutral}</span>` : "");
+        html += `<div>
+          <button class="group-header is-closed" data-act="toggleGroup" data-group="${g[0]}">
+            ${svgIcon(g[2], 16, iconColor)}
+            <span class="g-label">${vi ? g[0] : g[1]}</span>
+            ${rollupBadge}
+            <span class="group-caret">▶</span>
+          </button>
+        </div>`;
+      }
+      if (g[4]) html += `<div class="group-gap"></div>`;
+    });
+
+    html += `</div></div>`;
+  } else {
+    html += `<div class="rail">
+      <button class="rail-header" data-act="toggleCollapse" title="Mở rộng">EDI</button>
+      <div class="rail-scroll">`;
+    RAW.forEach(g => {
+      const items = g[5];
+      const hasActive = items.some(it => it[2] === state.sel);
+      const iconColor = hasActive ? "var(--green)" : "var(--text-side-muted)";
+      html += `<div>
+        <button class="rail-item ${hasActive ? "active" : ""}" data-act="openFlyout" data-group="${g[0]}" title="${vi ? g[0] : g[1]}">
+          ${svgIcon(g[2], 18, hasActive ? "var(--green)" : iconColor)}
+        </button>
+        ${g[4] ? `<div class="group-gap"></div>` : ""}
+      </div>`;
+    });
+    html += `</div></div>`;
+
+    if (state.flyout) {
+      const g = RAW.find(x => x[0] === state.flyout);
+      if (g) {
+        html += `<div class="flyout">
+          <div class="flyout-title">${vi ? g[0] : g[1]}</div>
+          <div class="flyout-list">`;
+        g[5].forEach(it => {
+          const active = it[2] === state.sel;
+          const badge = it[6] ? `<span class="item-badge ${it[7]}">${it[6]}</span>` : "";
+          html += `<button class="flyout-item ${active ? "active" : ""}" data-act="select" data-route="${it[2]}">
+            <span class="i-label">${vi ? it[0] : it[1]}</span>${badge}
+          </button>`;
+        });
+        html += `</div></div>`;
+      }
+    }
+  }
+
+  html += renderMainPane(vi, groupLabel, selLabel);
+
+  app.innerHTML = html;
+  wireEvents();
+}
+
+function renderMainPane(vi, groupLabel, selLabel) {
+  const ds = state.demoState;
+  let filters, chips, countLabel, body;
+
+  if (ds === "data") {
+    filters = { range: "02/08/2026 00:00 – 09/08/2026 23:59", partner: "CMA-CGM, Maersk, MSC, ZIM, Hapag-Lloyd", type: "COREOR, COPARN", status: "Tất cả 9 trạng thái" };
+    chips = ["7 ngày gần nhất", "5 trading partner", "COREOR, COPARN"];
+    countLabel = "1.284 kết quả";
+    body = renderTable();
+  } else if (ds === "emptyFilter") {
+    filters = { range: "02/08/2026 00:00 – 09/08/2026 23:59", partner: "ZIM", type: "IFTMBF", status: "REJECTED" };
+    chips = ["7 ngày gần nhất", "ZIM", "IFTMBF", "REJECTED", "ERR-EDI-104"];
+    countLabel = "0 kết quả";
+    body = renderEmpty("Không có kết quả với bộ lọc hiện tại",
+      "Trong 7 ngày gần nhất, ZIM chưa có bản tin IFTMBF nào ở trạng thái REJECTED. Nới khoảng thời gian hoặc bỏ bớt điều kiện rồi lọc lại.",
+      "Xóa lọc");
+  } else if (ds === "emptyData") {
+    filters = { range: "02/08/2026 00:00 – 09/08/2026 23:59", partner: "CMA-CGM, Maersk, MSC, ZIM, Hapag-Lloyd", type: "COREOR, COPARN", status: "Tất cả 9 trạng thái" };
+    chips = ["7 ngày gần nhất"];
+    countLabel = "0 kết quả";
+    body = renderEmpty("Chưa có bản tin nào trong khoảng thời gian đã chọn",
+      "Chưa có trading partner nào gửi bản tin về trong khoảng thời gian này. Kiểm tra Tình trạng kênh để biết các kênh nhận có đang hoạt động không.",
+      "Mở Tình trạng kênh");
+  } else {
+    filters = { range: "02/08/2026 00:00 – 09/08/2026 23:59", partner: "CMA-CGM, Maersk, MSC, ZIM, Hapag-Lloyd", type: "COREOR, COPARN", status: "Tất cả 9 trạng thái" };
+    chips = ["7 ngày gần nhất", "5 trading partner", "COREOR, COPARN"];
+    countLabel = "—";
+    body = renderError();
+  }
+
+  const chipsHtml = chips.map(c => `<div class="chip"><span>${c}</span><span class="x">×</span></div>`).join("");
+
+  return `<div class="main-pane" data-act-click="closeFlyout">
+    <div class="breadcrumb">
+      <span>EDI Center</span><span class="sep">›</span><span>${groupLabel}</span><span class="sep">›</span><span class="current">${selLabel}</span>
+    </div>
+    <div class="page-title-row"><div class="page-title">${selLabel}</div></div>
+
+    <div class="filter-card">
+      <div class="filter-row">
+        <div class="filter-grid">
+          <div class="filter-field">
+            <div class="filter-label">Khoảng thời gian nhận</div>
+            <div class="filter-input"><span class="fv">${filters.range}</span></div>
+          </div>
+          <div class="filter-field">
+            <div class="filter-label">Trading partner</div>
+            <div class="filter-input"><span class="fv">${filters.partner}</span><span class="caret">▼</span></div>
+          </div>
+          <div class="filter-field">
+            <div class="filter-label">Message type</div>
+            <div class="filter-input"><span class="fv">${filters.type}</span><span class="caret">▼</span></div>
+          </div>
+          <div class="filter-field">
+            <div class="filter-label">Trạng thái đồng bộ</div>
+            <div class="filter-input"><span class="fv">${filters.status}</span><span class="caret">▼</span></div>
+          </div>
+        </div>
+        <div class="filter-actions">
+          <div class="btn btn-primary">Áp dụng</div>
+          <div class="btn btn-outline">Xóa lọc</div>
+          <div class="btn btn-outline">Lưu bộ lọc</div>
+        </div>
+      </div>
+      <button class="more-filters"><span class="car">▲</span><span>Bộ lọc khác</span></button>
+      <div class="filter-grid secondary">
+        <div class="filter-field">
+          <div class="filter-label">Loại tác động</div>
+          <div class="filter-input"><span class="fv">Tất cả</span><span class="caret">▼</span></div>
+        </div>
+        <div class="filter-field">
+          <div class="filter-label">Mã lỗi</div>
+          <div class="filter-input"><span class="fv">Tất cả</span><span class="caret">▼</span></div>
+        </div>
+        <div class="filter-field">
+          <div class="filter-label">Số booking hoặc số DO</div>
+          <div class="filter-input"><span class="fv">Nhập số booking hoặc số DO</span></div>
+        </div>
+        <div class="filter-field">
+          <div class="filter-label">Tên file gốc</div>
+          <div class="filter-input"><span class="fv">Nhập một phần tên file</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chips-row">${chipsHtml}<div class="count-label">${countLabel}</div></div>
+
+    <div class="bulk-row">
+      <div class="bulk-hint">Màn này không có hành động hàng loạt</div>
+      <div class="bulk-actions">
+        <div class="btn btn-outline btn-sm">Xuất Excel</div>
+        <div class="btn btn-outline btn-sm">Chọn cột hiển thị</div>
+        <div class="btn btn-outline btn-sm">Làm mới</div>
+      </div>
+    </div>
+
+    ${body}
+  </div>`;
+}
+
+function renderTable() {
+  const rows = ROWS.map(r => ({
+    time: r[0].slice(11), rel: r[1], partner: r[2], partnerFull: r[3],
+    type: r[4], action: r[5], object: r[6], status: r[7], statusColor: SC[r[7]],
+    errCode: r[8] || "—", reason: r[9], dispatch: r[10],
+    recon: r[11], reconColor: r[11] === "Lệch 2 trường" ? "var(--danger)" : "var(--text-body)",
+    file: r[12]
+  }));
+
+  const head = `<div class="table-head table-grid-cols">
+    <div>Thời điểm nhận</div><div>Trading partner</div><div>Message type</div><div>Đối tượng nghiệp vụ</div>
+    <div>Trạng thái</div><div>Lý do nếu bị chặn</div><div>Phát hành</div><div>Đối soát</div><div>File gốc</div>
+  </div>`;
+
+  const body = rows.map(r => `<div class="table-row table-grid-cols">
+    <div class="stack"><span class="mono" style="font-size:12px;color:var(--navy)">${r.time}</span><span style="font-size:11px;color:var(--text-muted2)">${r.rel}</span></div>
+    <div title="${r.partnerFull}">${r.partner}</div>
+    <div class="stack"><span class="mono" style="font-size:12px;color:var(--navy)">${r.type}</span><span style="font-size:11px;color:var(--text-muted)">${r.action}</span></div>
+    <div class="mono" style="font-size:12px">${r.object}</div>
+    <div><span class="status-pill" style="background:${r.statusColor}">${r.status}</span></div>
+    <div class="stack" style="min-width:0"><span class="mono" style="font-size:11.5px;color:var(--navy)">${r.errCode}</span><span style="font-size:11px;color:var(--text-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.reason}</span></div>
+    <div class="mono" style="font-size:12px;color:var(--text-body)">${r.dispatch}</div>
+    <div style="font-size:12px;color:${r.reconColor}">${r.recon}</div>
+    <div>${r.file}</div>
+  </div>`).join("");
+
+  return `<div class="table-card">${head}${body}</div>
+  <div class="pagination">
+    <div>Hiển thị 1–50 / 1.284</div>
+    <div class="page-size">
+      <span>Số dòng mỗi trang</span>
+      <div class="page-size-box">50<span style="font-size:9px;color:var(--text-muted2)">▼</span></div>
+    </div>
+  </div>`;
+}
+
+function renderEmpty(title, bodyText, actionLabel) {
+  return `<div class="state-card empty">
+    <div class="state-title">${title}</div>
+    <div class="state-body">${bodyText}</div>
+    <div class="btn btn-outline" style="margin-top:4px">${actionLabel}</div>
+  </div>`;
+}
+
+function renderError() {
+  return `<div class="state-card error">
+    <div class="state-title">Không tải được danh sách bản tin</div>
+    <div class="state-err-code">ERR-EDI-502 · Hết thời gian chờ phản hồi từ dịch vụ EDI</div>
+    <div class="state-body">Bộ lọc đang áp vẫn được giữ nguyên. Thử lại sau ít phút, nếu vẫn lỗi thì kiểm tra Kênh kết nối TOS.</div>
+    <div class="btn btn-primary" style="margin-top:4px">Thử lại</div>
+  </div>`;
+}
+
+function wireEvents() {
+  document.querySelectorAll("[data-act]").forEach(el => {
+    el.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const act = el.dataset.act;
+      if (act === "setVI") state.lang = "vi";
+      else if (act === "setEN") state.lang = "en";
+      else if (act === "toggleCollapse") { state.collapsed = !state.collapsed; state.flyout = null; }
+      else if (act === "toggleGroup") state.open = (state.open === el.dataset.group ? null : el.dataset.group);
+      else if (act === "openFlyout") state.flyout = (state.flyout === el.dataset.group ? null : el.dataset.group);
+      else if (act === "select") { state.sel = el.dataset.route; state.flyout = null; }
+      render();
+    });
+  });
+  const mainPane = document.querySelector(".main-pane");
+  if (mainPane) mainPane.addEventListener("click", () => { if (state.flyout) { state.flyout = null; render(); } });
+}
+
+document.getElementById("stateSelect").addEventListener("change", (e) => {
+  state.demoState = e.target.value;
+  render();
+});
+
+render();
+</script>
+</body>
+</html>
