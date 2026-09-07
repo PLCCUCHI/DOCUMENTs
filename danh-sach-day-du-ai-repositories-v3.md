@@ -13,13 +13,13 @@
 -----
 ## Agent Skills đang trở thành một trong những xu hướng phát triển nhanh nhất trên GitHub năm 2026.
 10 repo dưới đây có tổng cộng hơn 1,3 triệu stars:
-## 1️⃣ Anthropic Skills ⭐ 170K
+> 1️⃣ Anthropic Skills ⭐ 170K
 - Skills chính thức từ Anthropic cho tài liệu, dữ liệu và thiết kế.
 - 🔗 https://github.com/anthropics/skills
-2️⃣ Superpowers ⭐ 274K
+- 2️⃣ Superpowers ⭐ 274K
 - Quy trình phát triển phần mềm: Spec → Plan → TDD → Review.
 - 🔗 https://github.com/obra/superpowers
-3️⃣ Karpathy Skills ⭐ 204K
+- 3️⃣ Karpathy Skills ⭐ 204K
 - Các nguyên tắc coding của Andrej Karpathy, giúp AI suy nghĩ trước và viết code đơn giản hơn.
 - 🔗 https://github.com/forrestchang/andrej-karpathy-skills
 - 4️⃣ Skills for Real Engineers ⭐ 225K
