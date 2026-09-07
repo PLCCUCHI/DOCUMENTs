@@ -30,7 +30,7 @@
 - 🔗 https://github.com/nextlevelbuilder/ui-ux-pro-max-skill
 > 6️⃣ Caveman ⭐ 99.3K
 - Giúp Claude Code giao tiếp ngắn gọn hơn, tiết kiệm khoảng 65% token.
-- 🔗 https://github.com/raphaelmansuy/caveman
+- 🔗 https://github.com/JuliusBrussee/caveman
 > 7️⃣ Addy Osmani's Agent Skills ⭐ 88.7K
 - Các kỹ năng engineering hướng đến việc xây dựng phần mềm thực tế.
 - 🔗 https://github.com/addyosmani/agent-skills
