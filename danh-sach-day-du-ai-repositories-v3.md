@@ -11,9 +11,9 @@
 - **Nhóm tính năng chủ đạo:** AI Agents (tự lập trình, điều khiển máy tính), Môi trường huấn luyện Local (Huấn luyện, tinh chỉnh LLM), MCP Servers (Giao thức kết nối công cụ), RAG & Trích xuất tri thức, Thiết kế giao diện (UI/UX) và Video AI.
 
 -----
-Agent Skills đang trở thành một trong những xu hướng phát triển nhanh nhất trên GitHub năm 2026.
+## Agent Skills đang trở thành một trong những xu hướng phát triển nhanh nhất trên GitHub năm 2026.
 10 repo dưới đây có tổng cộng hơn 1,3 triệu stars:
-1️⃣ Anthropic Skills ⭐ 170K
+## 1️⃣ Anthropic Skills ⭐ 170K
 Skills chính thức từ Anthropic cho tài liệu, dữ liệu và thiết kế.
 🔗 https://github.com/anthropics/skills
 2️⃣ Superpowers ⭐ 274K
