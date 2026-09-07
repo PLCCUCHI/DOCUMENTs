@@ -16,31 +16,31 @@
 > 1️⃣ Anthropic Skills ⭐ 170K
 - Skills chính thức từ Anthropic cho tài liệu, dữ liệu và thiết kế.
 - 🔗 https://github.com/anthropics/skills
-- 2️⃣ Superpowers ⭐ 274K
+> 2️⃣ Superpowers ⭐ 274K
 - Quy trình phát triển phần mềm: Spec → Plan → TDD → Review.
 - 🔗 https://github.com/obra/superpowers
-- 3️⃣ Karpathy Skills ⭐ 204K
+> 3️⃣ Karpathy Skills ⭐ 204K
 - Các nguyên tắc coding của Andrej Karpathy, giúp AI suy nghĩ trước và viết code đơn giản hơn.
 - 🔗 https://github.com/forrestchang/andrej-karpathy-skills
-- 4️⃣ Skills for Real Engineers ⭐ 225K
+> 4️⃣ Skills for Real Engineers ⭐ 225K
 - Các kỹ năng coding thực tế từ workflow của một kỹ sư phần mềm.
 - 🔗 https://github.com/mattpocock/skills
-- 5️⃣ UI/UX Pro Max Skill ⭐ 118K
+> 5️⃣ UI/UX Pro Max Skill ⭐ 118K
 - Giúp AI tạo UI/UX chuyên nghiệp cho web và mobile.
 - 🔗 https://github.com/nextlevelbuilder/ui-ux-pro-max-skill
-- 6️⃣ Caveman ⭐ 99.3K
+> 6️⃣ Caveman ⭐ 99.3K
 - Giúp Claude Code giao tiếp ngắn gọn hơn, tiết kiệm khoảng 65% token.
 - 🔗 https://github.com/raphaelmansuy/caveman
-- 7️⃣ Addy Osmani's Agent Skills ⭐ 88.7K
+> 7️⃣ Addy Osmani's Agent Skills ⭐ 88.7K
 - Các kỹ năng engineering hướng đến việc xây dựng phần mềm thực tế.
 - 🔗 https://github.com/addyosmani/agent-skills
-- 8️⃣ Taste Skill ⭐ 78K
+> 8️⃣ Taste Skill ⭐ 78K
 - Giúp AI tạo ra sản phẩm có gu hơn, thay vì những thiết kế generic.
 - 🔗 https://github.com/Leonxlnx/taste-skill
-- 9️⃣ Awesome Claude Skills ⭐ 72.8K
+> 9️⃣ Awesome Claude Skills ⭐ 72.8K
 - Danh sách tổng hợp các Claude Skills, tools và resources đáng chú ý.
 - 🔗 https://github.com/ComposioHQ/awesome-claude-skills
-- 🔟 I Have ADHD Skill ⭐ 22.2K
+> 🔟 I Have ADHD Skill ⭐ 22.2K
 - Giúp output của coding agent ngắn gọn, dễ đọc và dễ theo dõi.
 - 🔗 https://github.com/tech-leads-club/agent-skills
 -----
